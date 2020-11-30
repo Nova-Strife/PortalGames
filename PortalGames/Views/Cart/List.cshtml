@@ -1,0 +1,90 @@
+﻿@model IEnumerable<PortalGames.Models.Game>
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<h4 id="message" class="text-center text-danger">@ViewBag.Message</h4>
+
+<div class="container text-right">
+    <h4 style="display:inline-block">Счет - @Repository.Sum.ToString("# тг.")</h4>
+    <a style="display:inline-block" asp-action="TopUp" class="btn btn-success">Пополнить</a>
+</div>
+<br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Release)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Release)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price) тг.
+                </td>
+                <td>
+                    <a asp-action="Remove" asp-route-id="@item.Id" class="btn btn-danger">Убрать из корзины</a>
+                    @*@Html.ActionLink("Убрать из корзины", "Remove", "Games", new { id = item.Id, @class = "btn btn-danger" })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div style="text-align:right">
+    <a id="buy" asp-action="Buy" class="btn btn-outline-success">Приобрести товары на стоимость <b>@Model.Sum(g => g.Price).ToString("# тг")</b></a>
+</div>
+
+<a asp-action="Index" asp-controller="Games" class="page-link" style="display:inline-block">Назад</a>
+
+@section Scripts{
+    <script>
+        $(function () {
+            @*$("#buy").click(function () {
+                @if (Repository.Sum < Model.Sum(g => g.Price))
+                {
+                      @:$("#message").html("<h4>Недостаточно средств");
+                }
+                else if (Model.Count() == 0)
+                {
+                     @:$("#message").html("<h4>В корзине отсутствуют товары")
+                }
+            });*@
+        });
+    </script>
+}

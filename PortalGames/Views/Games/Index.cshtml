@@ -1,0 +1,74 @@
+﻿@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Список игр";
+}
+@*<div id="dialog" class="modal fade">
+        <div id="content" class="modal-dialog modal-lg"></div>
+    </div>*@
+
+<div class="container text-center">
+    <form asp-action="Index" class="form-check-inline">
+        <select name="sortOrder" class="form-check form-check-input custom-select">
+            <option value="@SortState.NameAsc">Имени</option>
+            <option value="@SortState.PriceAsc">Цене</option>
+            <option value="@SortState.DateAsc">Дате релиза</option>
+        </select>
+
+        <input placeholder="Название игры" name="name" value="@Model.FilterViewModel.Name" class="form-control form-check form-check-input" />
+        <input placeholder="Цена от" name="startPrice" value="@Model.FilterViewModel.StartPrice" class="form-control form-check  form-check-input" />
+        <input placeholder="Цена до" name="endPrice" value="@Model.FilterViewModel.EndPrice" class="form-control form-check  form-check-input" />
+
+        <button class="btn btn-outline-success form-control form-check">Отфильтровать</button>
+    </form>
+</div>
+<hr />
+
+<div class="container">
+    @if (Repository.Account?.Role == "admin")
+    {
+        <h5 style="display:inline-block">@Html.ActionLink("Добавить новую игру", "Create", "Games", null, new { @class = "btn btn-outline-primary", style = "text-align:right;" })</h5>
+    }
+    <p></p>
+    <div class="block-left">
+        <div id="list">
+            @foreach (var game in Model.Games)
+            {
+                <div class="shadow box-shadow">
+                    <h2>
+                        <a asp-action="Details" asp-route-id="@game.Id" class="details nav nav-link" style="display:inline-block">@game.Name</a>
+                        @if (Repository.Account?.Role == "admin")
+                        {
+                            <a asp-action="Edit" asp-route-id="@game.Id" class="btn btn-warning"> &#9998 </a>
+                        }
+                    </h2>
+                    <ul>
+                        <li><b>@Html.DisplayNameFor(model => game.Price)</b> | @game.Price тг.</li>
+                        <li><b>@Html.DisplayNameFor(model => game.Genre)</b> | @game.Genre</li>
+                    </ul>
+                    <a asp-action="Add" asp-controller="Cart" asp-route-id="@game.Id" class="btn btn-secondary">В корзину</a>
+                </div><p></p>
+            }
+        </div>
+    </div>
+
+    <div id="content" class="block-right">
+
+    </div>
+
+    <page-link page-action="Index" page-model="Model.PageViewModel"></page-link>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+            $('.details').click(function (e) {
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#content').html(data);
+                })
+            });
+        })
+    </script>
+}
